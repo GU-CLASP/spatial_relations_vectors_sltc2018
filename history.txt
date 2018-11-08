@@ -1,0 +1,8 @@
+mkdir -p models/relations/holdouts/
+nohup time python preprocess.py -c relations -o models/relations/ > models/relations/log.preprocessing.txt &
+nohup time python bucketing.py -v models/relations/vocab.npy -d models/relations/dataset.npy -o models/relations/ > models/relations/log.bucketing.txt &
+nohup time python swapping.py -t 20 -v models/relations/vocab.npy -b models/relations/buckets.npy -o models/relations/holdouts/ > models/relations/log.swapping.txt &
+nohup time python train.py -g 0 -v models/relations/vocab.npy -d models/relations/dataset_train.npy -o models/relations/ > models/relations/log.train.txt &
+nohup time python perplexity_vectors.py -m models/relations/language_model.h5 -v models/relations/vocab.npy -i models/relations/holdouts/ -o models/relations/ -g 1 > models/relations/log.embeddings.txt &
+nohup time python embeddings.py -m models/relations/language_model.h5 -v models/relations/vocab.npy -i models/relations/holdouts/ -o models/relations/ -g 1 > models/relations/log.embeddings.txt &
+
